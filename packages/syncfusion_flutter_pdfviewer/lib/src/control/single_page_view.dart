@@ -55,7 +55,7 @@ class SinglePageView extends StatefulWidget {
       this.isTablet,
       this.scrollDirection,
       this.onInteractionEnd,
-      this.children)
+      this.children, this.enablePageFling)
       : super(key: key);
 
   /// PdfViewer controller of PdfViewer.
@@ -130,6 +130,8 @@ class SinglePageView extends StatefulWidget {
 
   /// Triggered when interaction end.
   final VoidCallback? onInteractionEnd;
+
+  final bool enablePageFling;
 
   @override
   SinglePageViewState createState() => SinglePageViewState();
@@ -476,14 +478,14 @@ class SinglePageViewState extends State<SinglePageView> {
                   (_panStartOffset - _panUpdateOffset).abs();
               if (pannedDistance > 300 * widget.pdfViewerController.zoomLevel) {
                 if (_canJumpPrevious &&
-                    widget.pdfViewerController.pageNumber != 1) {
+                    widget.pdfViewerController.pageNumber != 1 && widget.enablePageFling ==true) {
                   widget.pageController.animateToPage(
                       widget.pdfViewerController.pageNumber - 2,
                       duration: const Duration(milliseconds: 500),
                       curve: Curves.ease);
                 } else if (_canJumpNext &&
                     widget.pdfViewerController.pageNumber !=
-                        widget.pdfViewerController.pageCount) {
+                        widget.pdfViewerController.pageCount && widget.enablePageFling ==true) {
                   widget.pageController.animateToPage(
                       widget.pdfViewerController.pageNumber,
                       duration: const Duration(milliseconds: 500),
@@ -646,7 +648,7 @@ class SinglePageViewState extends State<SinglePageView> {
                 _transformationController.value = Matrix4.identity();
                 widget.onPageChanged(value);
               },
-              physics:
+              physics: widget.enablePageFling == false?  const NeverScrollableScrollPhysics() :
                   _transformationController.value.getMaxScaleOnAxis() == 1 &&
                           _fingersInteracting <= 1
                       ? const BouncingScrollPhysics()
@@ -789,7 +791,7 @@ class SinglePageViewState extends State<SinglePageView> {
               (isMouseWheel &&
                   widget.scrollDirection == PdfScrollDirection.vertical))) {
         if (widget.pdfViewerController.pageNumber !=
-            widget.pdfViewerController.pageCount) {
+            widget.pdfViewerController.pageCount && widget.enablePageFling ==true) {
           widget.pageController.animateToPage(
               widget.pdfViewerController.pageNumber,
               duration: const Duration(milliseconds: 500),
@@ -804,7 +806,7 @@ class SinglePageViewState extends State<SinglePageView> {
                   pannedDistance > _kPaginationSlop) ||
               (isMouseWheel &&
                   widget.scrollDirection == PdfScrollDirection.vertical))) {
-        if (widget.pdfViewerController.pageNumber != 1) {
+        if (widget.pdfViewerController.pageNumber != 1 && widget.enablePageFling ==true) {
           widget.pageController.animateToPage(
               widget.pdfViewerController.pageNumber - 2,
               duration: const Duration(milliseconds: 500),

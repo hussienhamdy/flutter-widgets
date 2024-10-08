@@ -182,6 +182,7 @@ class SfPdfViewer extends StatefulWidget {
     this.canShowHyperlinkDialog = true,
     this.enableHyperlinkNavigation = true,
     this.canShowTextSelectionMenu = true,
+    this.enablePageFling = true,
   })  : _provider = AssetPdf(name, bundle),
         assert(pageSpacing >= 0),
         super(key: key);
@@ -252,6 +253,7 @@ class SfPdfViewer extends StatefulWidget {
     this.canShowHyperlinkDialog = true,
     this.enableHyperlinkNavigation = true,
     this.canShowTextSelectionMenu = true,
+    this.enablePageFling = true,
   })  : _provider = NetworkPdf(src, headers),
         assert(pageSpacing >= 0),
         super(key: key);
@@ -320,6 +322,7 @@ class SfPdfViewer extends StatefulWidget {
     this.canShowHyperlinkDialog = true,
     this.enableHyperlinkNavigation = true,
     this.canShowTextSelectionMenu = true,
+    this.enablePageFling = true,
   })  : _provider = MemoryPdf(bytes),
         assert(pageSpacing >= 0),
         super(key: key);
@@ -392,6 +395,7 @@ class SfPdfViewer extends StatefulWidget {
     this.canShowHyperlinkDialog = true,
     this.enableHyperlinkNavigation = true,
     this.canShowTextSelectionMenu = true,
+    this.enablePageFling = true,
   })  : _provider = FilePdf(file),
         assert(pageSpacing >= 0),
         super(key: key);
@@ -1080,6 +1084,44 @@ class SfPdfViewer extends StatefulWidget {
   /// }
   /// ```
   final bool canShowTextSelectionMenu;
+
+  /// Indicates whether the user is able to fling manually through the pages or not.
+  ///
+  /// If this property is set to `false`, the user will not be able to fling through pages manually, can only do it through the controller.
+  ///
+  /// Defaults to `true`
+  ///
+  /// This example demonstrates how to set the fling property in the [SfPdfViewer].
+  ///
+  /// ```dart
+  /// class MyAppState extends State<MyApp>{
+  ///
+  /// late PdfViewerController _pdfViewerController;
+  ///
+  ///  @override
+  ///  void initState(){
+  ///    _pdfViewerController = PdfViewerController();
+  ///    super.initState();
+  ///  }
+  ///
+  ///  @override
+  ///  Widget build(BuildContext context) {
+  ///    return MaterialApp(
+  ///      home: Scaffold(
+  ///        appBar: AppBar(
+  ///           title: Text('Syncfusion Flutter PdfViewer'),
+  ///        ),
+  ///        body: SfPdfViewer.asset(
+  ///          'assets/flutter-succinctly.pdf',
+  ///          controller: _pdfViewerController,
+  ///          enablePageFling: false,
+  ///        ),
+  ///      ),
+  ///    );
+  ///  }
+  ///}
+  /// ```
+  final bool enablePageFling;
 
   @override
   SfPdfViewerState createState() => SfPdfViewerState();
@@ -3274,7 +3316,8 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
                         _isTablet,
                         _scrollDirection,
                         _getTileImage,
-                        children),
+                        children,
+                        widget.enablePageFling),
                   );
                   if (_isSinglePageViewPageChanged &&
                       _renderedImages
